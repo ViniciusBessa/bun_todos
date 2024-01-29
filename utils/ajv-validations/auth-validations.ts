@@ -83,7 +83,7 @@ async function userExistsByEmail(email: string): Promise<boolean> {
   return !!user;
 }
 
-async function userExistsById(id: string | number): Promise<boolean> {
+async function userExistsById(id: string): Promise<boolean> {
   const user = await User.findById(id);
   return !!user;
 }

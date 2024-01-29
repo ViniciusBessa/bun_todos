@@ -43,7 +43,7 @@ const updateUser = asyncWrapper(
     const { userId } = req.params;
     let { name, email, password } = req.body;
 
-    if (user.id !== Number(userId)) {
+    if (user.id !== userId) {
       throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE);
     }
 
@@ -59,11 +59,15 @@ const updateUser = asyncWrapper(
       throw new BadRequestError(errorMessage);
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, {
-      name,
-      email,
-      password,
-    });
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        name,
+        email,
+        password,
+      },
+      { new: true }
+    );
 
     // Getting the user payload and generating a token for authentication
     const userPayload = await updatedUser!.getPayload();
@@ -99,7 +103,7 @@ const deleteOwnAccount = asyncWrapper(
     const { password } = req.body;
 
     try {
-      await deleteOwnUserSchema({ id: user.id.toString(), password });
+      await deleteOwnUserSchema({ id: user.id, password });
     } catch (error: any) {
       const errorMessage = error.errors[0].message as string;
 

@@ -84,5 +84,16 @@ UserSchema.pre('save', async function () {
   this.password = await Bun.password.hash(this.password, 'bcrypt');
 });
 
+UserSchema.pre(['updateOne', 'findOneAndUpdate'], async function () {
+  const update = this.getUpdate();
+
+  if (update && 'password' in update) {
+    this.setUpdate({
+      ...update,
+      password: await Bun.password.hash(update.password, 'bcrypt'),
+    });
+  }
+});
+
 const User = mongoose.model('User', UserSchema);
 export { User };
