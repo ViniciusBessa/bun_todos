@@ -2,8 +2,8 @@ import Ajv from 'ajv';
 import ajvErrors from 'ajv-errors';
 import type { LoginUserInput, RegisterUserInput } from '../../types/auth-input';
 import { EMAIL_REGEX } from '../email-regex';
-import { PrismaClient } from '@prisma/client';
 import type { GetUserInput, UpdateUserInput } from '../../types/user-input';
+import { User } from '../../models/User';
 
 // Field constraints
 const USERNAME_MIN_LENGTH = 8;
@@ -35,7 +35,6 @@ const USER_MESSAGES = {
 const ajv = ajvErrors(new Ajv({ allErrors: true }));
 
 // Extra Keywords
-const prisma = new PrismaClient();
 
 ajv.addKeyword({
   keyword: 'nameIsAvailable',
@@ -70,22 +69,22 @@ ajv.addKeyword({
 });
 
 async function nameIsAvailable(name: string): Promise<boolean> {
-  const users = await prisma.user.findMany({ where: { name } });
+  const users = await User.find({ name });
   return users.length === 0;
 }
 
 async function emailIsAvailable(email: string): Promise<boolean> {
-  const users = await prisma.user.findMany({ where: { email } });
+  const users = await User.find({ email });
   return users.length === 0;
 }
 
 async function userExistsByEmail(email: string): Promise<boolean> {
-  const user = await prisma.user.findFirst({ where: { email } });
+  const user = await User.findOne({ email });
   return !!user;
 }
 
 async function userExistsById(id: string | number): Promise<boolean> {
-  const user = await prisma.user.findFirst({ where: { id: Number(id) } });
+  const user = await User.findById(id);
   return !!user;
 }
 
@@ -297,4 +296,7 @@ export {
   getUserSchema,
   deleteOwnUserSchema,
   USER_MESSAGES,
+  USERNAME_MIN_LENGTH,
+  USERNAME_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
 };

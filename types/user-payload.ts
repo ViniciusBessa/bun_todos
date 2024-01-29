@@ -1,10 +1,10 @@
-import { Role } from '@prisma/client';
+import type mongoose from 'mongoose';
 
 export interface UserPayload {
-  id: number;
+  _id: mongoose.Types.ObjectId;
   name: string;
   email: string;
-  role: Role;
-  createdAt: Date;
-  updatedAt: Date;
+  role: 'ADMIN' | 'USER';
+  createdAt: NativeDate;
+  updatedAt: NativeDate;
 }

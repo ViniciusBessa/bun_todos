@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 const trimInputs = (req: Request, res: Response, next: NextFunction) => {
   // Trimming all data in req.body

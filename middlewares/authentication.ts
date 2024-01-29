@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { User } from '../models/User';
 import type { Request, Response, NextFunction } from 'express';
-import { getUserPayload, verifyToken } from '../utils/jwt';
-
-const prisma = new PrismaClient();
+import { verifyToken } from '../utils/jwt';
 
 const authMiddleware = async (
   req: Request,
@@ -23,13 +21,15 @@ const authMiddleware = async (
 
     // Getting the user from the database
     const userPayload = await verifyToken(token);
-    const user = await prisma.user.findFirst({ where: { id: userPayload.id } });
+    const user = await User.findOne({
+      name: userPayload.name,
+      email: userPayload.email,
+    });
 
-    // If no user was found, push forward the request
-    if (!user) {
-      return next();
+    // If the user was found, attach the instance to the request
+    if (user) {
+      req.user = user;
     }
-    req.user = await getUserPayload(user);
     return next();
   } catch {
     return next();
