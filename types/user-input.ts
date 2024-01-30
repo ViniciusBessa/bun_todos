@@ -5,5 +5,5 @@ export interface UpdateUserInput {
 }
 
 export interface GetUserInput {
-  id: string | number;
+  id: string;
 }
