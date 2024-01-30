@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mongo:
+      mongodb:
         image: mongo
         env:
           MONGO_INITDB_ROOT_USERNAME: root
