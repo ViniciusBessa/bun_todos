@@ -270,8 +270,7 @@
             "description": "ID of user to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
@@ -340,8 +339,7 @@
             "description": "ID of user to update",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
@@ -448,8 +446,7 @@
             "description": "ID of user to delete",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
@@ -531,6 +528,16 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "It's necessary to login to see this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -552,20 +559,20 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
+                  "title": {
                     "type": "string",
-                    "example": "Brazil"
+                    "example": "My First Task"
                   },
-                  "code": {
+                  "description": {
                     "type": "string",
-                    "example": "BR"
+                    "example": "The first task of the day"
                   },
-                  "flagUrl": {
-                    "type": "string",
-                    "example": "https://flags.com/brazil.jpg"
+                  "completed": {
+                    "type": "boolean",
+                    "example": false
                   }
                 },
-                "required": ["name", "code", "flagUrl"]
+                "required": ["title", "description", "completed"]
               }
             }
           }
@@ -605,16 +612,6 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "You don't have the permission to access this content",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ForbiddenError"
-                }
-              }
-            }
           }
         },
         "security": [
@@ -637,8 +634,7 @@
             "description": "ID of task to return",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
@@ -654,6 +650,16 @@
                       "$ref": "#/components/schemas/Task"
                     }
                   }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "It's necessary to login to see this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
                 }
               }
             }
@@ -682,8 +688,7 @@
             "description": "ID of task to update",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
@@ -695,17 +700,17 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
+                  "title": {
                     "type": "string",
-                    "example": "Brazil"
+                    "example": "My First Task"
                   },
-                  "code": {
+                  "description": {
                     "type": "string",
-                    "example": "BR"
+                    "example": "The first task of the day"
                   },
-                  "flagUrl": {
-                    "type": "string",
-                    "example": "https://flags.com/brazil.jpg"
+                  "completed": {
+                    "type": "boolean",
+                    "example": false
                   }
                 }
               }
@@ -790,8 +795,7 @@
             "description": "ID of task to delete",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
@@ -855,10 +859,9 @@
       "User": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 1
+          "_id": {
+            "type": "string",
+            "example": "1"
           },
           "name": {
             "type": "string",
