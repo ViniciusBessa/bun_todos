@@ -11,11 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mongodb:
+      mongo:
         image: mongo
         env:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: password
+          MONGO_INITDB_DATABASE: tests
         options: >-
           --health-cmd mongo
           --health-interval 10s
@@ -32,5 +33,5 @@ jobs:
       - run: bun install
       - run: bun run test
         env:
-          MONGO_URI: mongodb://root:password@mongo:27017/
+          MONGO_URI: mongodb://root:password@localhost:27017/tests?authMechanism=DEFAULT&authSource=admin
           JWT_SECRET: jwt_secret_token
