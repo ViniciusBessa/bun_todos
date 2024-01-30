@@ -1,0 +1,33 @@
+name: Bun CI
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: mongo
+
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: password
+
+        ports:
+          - 27017:27017
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: bun run test
+        env:
+          DATABASE_URL: mongodb://root:password@mongo:27017/bunTodos?retryWrites=true&w=majority
+          JWT_SECRET: jwt_secret_token
