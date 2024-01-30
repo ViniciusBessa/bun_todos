@@ -1,0 +1,968 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Tasks API - OpenAPI 3.0",
+    "description": "This a simple API to administer your tasks.\n\nSome useful links:\n- [The API repository](https://github.com/ViniciusBessa/football-api)\n- [The source API definition used](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)",
+    "contact": {
+      "email": "vinicius.b.silva3@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/license/mit/"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Access endpoints to register, login and get info from users"
+    },
+    {
+      "name": "user",
+      "description": "Access endpoints to get, update and delete users"
+    },
+    {
+      "name": "task",
+      "description": "Access endpoints to get, create, update and delete tasks"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Register an user",
+        "description": "Register a new user in the system",
+        "operationId": "register",
+        "requestBody": {
+          "required": true,
+          "description": "Register a new user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Robert"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "robert@email.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "newPassword"
+                  }
+                },
+                "required": ["name", "email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully registered an user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "token": {
+                      "$ref": "#/components/schemas/Token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to register an user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "err": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Login an user",
+        "description": "Get a authentication token for an user",
+        "operationId": "login",
+        "requestBody": {
+          "required": true,
+          "description": "Get a authentication token for an user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "robert@email.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "newPassword"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully logged in as an user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "token": {
+                      "$ref": "#/components/schemas/Token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "err": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/user": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Get info from your user account",
+        "description": "Get info from your user account",
+        "operationId": "userInfo",
+        "responses": {
+          "200": {
+            "description": "Successfully returned info from your account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "token": {
+                      "$ref": "#/components/schemas/Token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "It's necessary to login to see this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": ["user"],
+        "summary": "Get all users",
+        "description": "Get all users",
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved all users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "It's necessary to login to see this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You don't have the permission to access this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "tags": ["user"],
+        "summary": "Get a specific user",
+        "description": "Get a specific user",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user to return",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "It's necessary to login to see this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You don't have the permission to access this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No user was found with the provided id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": ["user"],
+        "summary": "Update an user",
+        "description": "Update an user",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Update an specific user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Robert"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "robert@email.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "newPassword"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "token": {
+                      "$ref": "#/components/schemas/Token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to update an user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "It's necessary to login to see this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You don't have the permission to access this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No user was found with the provided id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["user"],
+        "summary": "Delete an user",
+        "description": "Delete an user",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "It's necessary to login to see this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You don't have the permission to access this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No user was found with the provided id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tasks": {
+      "get": {
+        "tags": ["task"],
+        "summary": "Get all tasks",
+        "description": "Get all tasks",
+        "operationId": "getTasks",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved all tasks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tasks": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Task"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["task"],
+        "summary": "Create a task",
+        "description": "Create a task",
+        "operationId": "createTask",
+        "requestBody": {
+          "required": true,
+          "description": "Create a task in the database",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Brazil"
+                  },
+                  "code": {
+                    "type": "string",
+                    "example": "BR"
+                  },
+                  "flagUrl": {
+                    "type": "string",
+                    "example": "https://flags.com/brazil.jpg"
+                  }
+                },
+                "required": ["name", "code", "flagUrl"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created a task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "task": {
+                      "$ref": "#/components/schemas/Task"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to create a task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "It's necessary to login to see this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You don't have the permission to access this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tasks/{taskId}": {
+      "get": {
+        "tags": ["task"],
+        "summary": "Get a specific task",
+        "description": "Get a specific task",
+        "operationId": "getTask",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "ID of task to return",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "task": {
+                      "$ref": "#/components/schemas/Task"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No task was found with the provided id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["task"],
+        "summary": "Update a task",
+        "description": "Update a task",
+        "operationId": "updateTask",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "ID of task to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Update a specific task",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Brazil"
+                  },
+                  "code": {
+                    "type": "string",
+                    "example": "BR"
+                  },
+                  "flagUrl": {
+                    "type": "string",
+                    "example": "https://flags.com/brazil.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated the task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "task": {
+                      "$ref": "#/components/schemas/Task"
+                    },
+                    "token": {
+                      "$ref": "#/components/schemas/Token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to update a task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "It's necessary to login to see this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You don't have the permission to access this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No task was found with the provided id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["task"],
+        "summary": "Delete a task",
+        "description": "Delete a task",
+        "operationId": "deleteTask",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "ID of task to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted the task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "task": {
+                      "$ref": "#/components/schemas/Task"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "It's necessary to login to see this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You don't have the permission to access this content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No task was found with the provided id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Robert"
+          },
+          "email": {
+            "type": "string",
+            "example": "robert@email.com"
+          },
+          "role": {
+            "type": "string",
+            "example": "USER",
+            "enum": ["USER", "ADMIN"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "1"
+          },
+          "title": {
+            "type": "string",
+            "example": "My First Task"
+          },
+          "description": {
+            "type": "string",
+            "example": "The first task of the day"
+          },
+          "completed": {
+            "type": "boolean",
+            "example": false
+          },
+          "user": {
+            "type": "User",
+            "$ref": "#/components/schemas/User"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Token": {
+        "type": "string",
+        "example": "jwtToken"
+      },
+      "BadRequestError": {
+        "type": "object",
+        "properties": {
+          "err": {
+            "type": "string",
+            "example": "Something is wrong with the request"
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "type": "object",
+        "properties": {
+          "err": {
+            "type": "string",
+            "example": "It's necessary to login to see this content"
+          }
+        }
+      },
+      "ForbiddenError": {
+        "type": "object",
+        "properties": {
+          "err": {
+            "type": "string",
+            "example": "You don't have the permission to access this content"
+          }
+        }
+      },
+      "NotFoundError": {
+        "type": "object",
+        "properties": {
+          "err": {
+            "type": "string",
+            "example": "No content was found with the provided id"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

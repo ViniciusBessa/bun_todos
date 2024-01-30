@@ -18,10 +18,12 @@ const getAllTasks = asyncWrapper(
 
     if (user.role === 'ADMIN') {
       // Getting all tasks in the database if the user is an admin
-      tasks = await Task.find();
+      tasks = await Task.find().select('_id title description completed');
     } else {
       // Getting all tasks of the user
-      tasks = await Task.find({ user: user.id });
+      tasks = await Task.find({ user: user.id }).select(
+        '_id title description completed'
+      );
     }
     return res.status(StatusCodes.OK).json({ tasks });
   }
@@ -44,10 +46,20 @@ const getSpecificTask = asyncWrapper(
     const task = await Task.findById(taskId);
 
     // Checking if the user should have access to this task
-    if (user.role !== 'ADMIN' && task!.user !== user.id) {
+    if (
+      user.role !== 'ADMIN' &&
+      task!.user.toString() !== user._id.toString()
+    ) {
       throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE);
     }
-    return res.status(StatusCodes.OK).json({ task });
+    return res.status(StatusCodes.OK).json({
+      task: {
+        _id: task!._id,
+        title: task!.title,
+        description: task!.description,
+        completed: task!.completed,
+      },
+    });
   }
 );
 
@@ -80,7 +92,14 @@ const createTask = asyncWrapper(
       completed,
       user: user.id,
     });
-    return res.status(StatusCodes.CREATED).json({ task });
+    return res.status(StatusCodes.CREATED).json({
+      task: {
+        _id: task._id,
+        title: task.title,
+        description: task.description,
+        completed: task.completed,
+      },
+    });
   }
 );
 
@@ -110,7 +129,7 @@ const updateTask = asyncWrapper(
     // Checking if the user should be able to update this task
     const task = await Task.findById(taskId);
 
-    if (task?.user !== user._id) {
+    if (task!.user.toString() !== user._id.toString()) {
       throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE);
     }
 
@@ -123,7 +142,7 @@ const updateTask = asyncWrapper(
         completed,
       },
       { new: true }
-    );
+    ).select('_id title description completed');
     return res.status(StatusCodes.OK).json({ task: updatedTask });
   }
 );
@@ -144,13 +163,23 @@ const deleteTask = asyncWrapper(
     // Checking if the user should be able to delete this task
     const task = await Task.findById(taskId);
 
-    if (task!.user !== user._id && user.role !== 'ADMIN') {
+    if (
+      task!.user.toString() !== user._id.toString() &&
+      user.role !== 'ADMIN'
+    ) {
       throw new ForbiddenError(FORBIDDEN_ERROR_MESSAGE);
     }
 
     // Deleting the task from the database and responding
     await Task.findByIdAndDelete(taskId);
-    return res.status(StatusCodes.OK).json({ task });
+    return res.status(StatusCodes.OK).json({
+      task: {
+        _id: task!._id,
+        title: task!.title,
+        description: task!.description,
+        completed: task!.completed,
+      },
+    });
   }
 );
 

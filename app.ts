@@ -40,12 +40,20 @@ import authMiddleware from './middlewares/authentication';
 app.use(trimInputs);
 app.use(authMiddleware);
 
+// Swagger
+import swaggerUi from 'swagger-ui-express';
+import swaggerDoc from './swagger.json';
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+
 // Routes
 import authRouter from './routes/auth';
 import userRouter from './routes/users';
+import taskRouter from './routes/tasks';
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/tasks', taskRouter);
 
 // Error handler and page not found middlewares
 import { notFoundMiddleware } from './middlewares/not-found';

@@ -7,7 +7,6 @@ import type {
   UpdateTaskInput,
 } from '../../types/task-input';
 import { userExistsById } from './auth-validations';
-import { User } from '../../models/User';
 
 // Field constraints
 const TITLE_MIN_LENGTH = 6;
@@ -31,7 +30,6 @@ const TASK_MESSAGES = {
   USER_ID_REQUIRED: 'Please, provide the id of a task',
   USER_NOT_FOUND: 'No user was found with the provided id',
   NOT_FOUND: 'No task was found with the provided id',
-  FORBIDDEN: "You don't have the privileges to update this task",
   ID_TYPE: "The task's id must be a string",
   ID_REQUIRED: 'Please, provide the id of a task',
 };
