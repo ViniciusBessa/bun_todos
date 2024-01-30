@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Tasks API - OpenAPI 3.0",
-    "description": "This a simple API to administer your tasks.\n\nSome useful links:\n- [The API repository](https://github.com/ViniciusBessa/football-api)\n- [The source API definition used](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)",
+    "description": "This a simple API to administer your tasks.\n\nSome useful links:\n- [The API repository](https://github.com/ViniciusBessa/bun_todos)\n- [The source API definition used](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)",
     "contact": {
       "email": "vinicius.b.silva3@gmail.com"
     },
