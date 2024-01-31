@@ -39,6 +39,14 @@ describe('Task Endpoints', () => {
       expect(response.body.tasks.length).toBeGreaterThanOrEqual(2);
     });
 
+    it('GET /api/v1/tasks should return all completed tasks in the database', async () => {
+      const response = await request
+        .get('/api/v1/tasks?completed=true')
+        .set({ Authorization: token });
+      expect(response.statusCode).toEqual(StatusCodes.OK);
+      expect(response.body.tasks.length).toEqual(1);
+    });
+
     it('GET /api/v1/tasks/:taskId should fail to return a task by not found', async () => {
       const response = await request
         .get('/api/v1/tasks/65b8060302c0c7f1643f3a21')
@@ -266,6 +274,14 @@ describe('Task Endpoints', () => {
         .set({ Authorization: token });
       expect(response.statusCode).toEqual(StatusCodes.OK);
       expect(response.body.tasks.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('GET /api/v1/tasks should return all completed tasks of the user', async () => {
+      const response = await request
+        .get('/api/v1/tasks?completed=true')
+        .set({ Authorization: token });
+      expect(response.statusCode).toEqual(StatusCodes.OK);
+      expect(response.body.tasks.length).toEqual(1);
     });
 
     it('GET /api/v1/tasks/:taskId should fail to return a task by not found', async () => {

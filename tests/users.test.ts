@@ -41,7 +41,7 @@ describe('User Endpoints', () => {
       expect(response.body.users.length).toBeGreaterThanOrEqual(5);
     });
 
-    it('GET /api/v1/users/65b8060302c0c7f1643f3390 should return an user entry', async () => {
+    it('GET /api/v1/users/:userId should return an user entry', async () => {
       const response = await request
         .get('/api/v1/users/65b8060302c0c7f1643f3390')
         .set({ Authorization: token });
@@ -146,7 +146,7 @@ describe('User Endpoints', () => {
       expect(response.body.user).toBeTruthy();
     });
 
-    it("DELETE /api/v1/users/65b8060302c0c7f1643f3392 should successfully delete another user's account", async () => {
+    it("DELETE /api/v1/users/:userId should successfully delete another user's account", async () => {
       const response = await request
         .delete('/api/v1/users/65b8060302c0c7f1643f3392')
         .set({ Authorization: token });
@@ -203,7 +203,7 @@ describe('User Endpoints', () => {
       expect(response.body.err).toEqual(FORBIDDEN_ERROR_MESSAGE);
     });
 
-    it('GET /api/v1/users/65b8060302c0c7f1643f3390 should fail to return any data by forbidden', async () => {
+    it('GET /api/v1/users/:userId should fail to return any data by forbidden', async () => {
       const response = await request
         .get('/api/v1/users/65b8060302c0c7f1643f3390')
         .set({ Authorization: token });

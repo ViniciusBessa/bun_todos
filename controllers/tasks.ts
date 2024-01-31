@@ -13,18 +13,25 @@ import { FORBIDDEN_ERROR_MESSAGE } from '../middlewares/restrict-access';
 const getAllTasks = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const { user } = req;
+    const { title, description, completed } = req.query;
+    const queryObject: { [key: string]: string | boolean } = {};
 
-    let tasks = [];
-
-    if (user.role === 'ADMIN') {
-      // Getting all tasks in the database if the user is an admin
-      tasks = await Task.find().select('_id title description completed');
-    } else {
-      // Getting all tasks of the user
-      tasks = await Task.find({ user: user.id }).select(
-        '_id title description completed'
-      );
+    if (user.role !== 'ADMIN') {
+      queryObject.user = user._id;
     }
+    if (title) {
+      queryObject.title = title as string;
+    }
+    if (description) {
+      queryObject.description = description as string;
+    }
+    if (completed) {
+      queryObject.completed = completed === 'true' ? true : false;
+    }
+
+    let tasks = await Task.find(queryObject).select(
+      '_id title description completed'
+    );
     return res.status(StatusCodes.OK).json({ tasks });
   }
 );
