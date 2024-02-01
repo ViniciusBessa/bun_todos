@@ -30,9 +30,9 @@ bun install
 3. Set up environment variables:
 Create a .env file in the root directory of the project and define the following environment variables:
 
-JWT_SECRET=your_secret_key
+  - JWT_SECRET=your_secret_key
 
-MONGO_URI=your_database_connection_string
+  - MONGO_URI=your_database_connection_string
 
 Make sure to replace your_secret_key with your secret key for JWT token signing and your_database_connection_string with your MongoDB connection string.
 
