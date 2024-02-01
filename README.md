@@ -41,7 +41,7 @@ Make sure to replace your_secret_key with your secret key for JWT token signing 
 ```bash
 bun run start
 ```
-Access the API at http://localhost:3000.
+Access the API at http://localhost:5000.
 
 ## API Endpoints
 
