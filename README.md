@@ -3,7 +3,9 @@ This is a simple TODO API built using the Express.js framework and executed usin
 
 ## Features
 Authentication: Users can sign up, log in, and log out securely.
+
 Account Management: Users can update their profile information and change passwords.
+
 Tasks: Users can manage their TODO tasks by creating, reading, updating, and deleting them.
 
 ## Getting Started
@@ -18,6 +20,7 @@ git clone https://github.com/your-username/todo-api.git
 ```bash
 npm install
 ```
+
 or
 
 ```bash
@@ -28,7 +31,9 @@ bun install
 Create a .env file in the root directory of the project and define the following environment variables:
 
 JWT_SECRET=your_secret_key
+
 MONGO_URI=your_database_connection_string
+
 Make sure to replace your_secret_key with your secret key for JWT token signing and your_database_connection_string with your MongoDB connection string.
 
 4. Run the application:
