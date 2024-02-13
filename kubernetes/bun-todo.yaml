@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bun-todo
+  labels:
+    app: bun-todo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bun-todo
+  template:
+    metadata:
+      labels:
+        app: bun-todo
+    spec:
+      containers:
+        - name: bun-todo
+          image: bun-todo
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: bun-todo-secret
+                  key: mongo-uri
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: bun-todo-secret
+                  key: jwt-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bun-todo-service
+spec:
+  selector:
+    name: bun-todo
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
